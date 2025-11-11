@@ -21,7 +21,8 @@ export class ProtocolGenerator {
     const fileName = `despacho_${safeDespacho}.docx`;
 
     try {
-      const fileBuffer = await htmlDocx.asBlob(html, {
+      // Correção: A biblioteca 'html-to-docx' é chamada como uma função diretamente.
+      const fileBuffer = await htmlDocx(html, null, {
         orientation: 'portrait',
         margins: {
           top: 1134,
