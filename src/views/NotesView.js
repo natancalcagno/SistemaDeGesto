@@ -30,116 +30,60 @@ export class NotesView {
     container.innerHTML = `
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">Notas Fiscais</h1>
-          <p class="text-gray-600 mt-1">Gerencie todas as notas fiscais</p>
+          <h1 class="text-3xl font-bold text-gray-900">Gerenciamento de Notas Fiscais</h1>
+          <p class="text-gray-600 mt-1">Adicione, edite e gere protocolos de entrega.</p>
         </div>
         <div class="flex gap-3">
-          ${this.selectedNotes.size > 0 ? `
-            <button id="generateProtocolBtn" class="btn-primary">
-              <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
-              Gerar Protocolo (${this.selectedNotes.size})
-            </button>
-          ` : ''}
-          <button id="addNoteBtn" class="btn-primary">
-            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
+          <button id="generateProtocolBtn" class="btn-primary flex items-center justify-center gap-2" ${this.selectedNotes.size === 0 ? 'disabled' : ''}>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            Gerar Protocolo (${this.selectedNotes.size})
+          </button>
+          <button id="addNoteBtn" class="btn-primary flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
             Nova Nota
           </button>
         </div>
       </div>
 
-      <div id="noteForm" class="card hidden">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4" id="formTitle">Nova Nota Fiscal</h3>
-        <form id="noteFormElement" class="space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Data de Entrada *</label>
-              <input type="date" id="dataEntrada" required class="input-field" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Empenho *</label>
-              <input type="text" id="empenho" required class="input-field" placeholder="Ex: 001/2025" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Empresa *</label>
-              <input type="text" id="empresa" required class="input-field" placeholder="Nome da empresa" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Setor *</label>
-              <input type="text" id="setor" required class="input-field" placeholder="Ex: Secretaria de Saúde" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Número da Nota *</label>
-              <input type="text" id="numeroNota" required class="input-field" placeholder="Ex: 12345" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Data da Nota *</label>
-              <input type="date" id="dataNota" required class="input-field" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Valor *</label>
-              <input type="number" id="valor" required step="0.01" class="input-field" placeholder="0.00" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Data de Saída</label>
-              <input type="date" id="dataSaida" class="input-field" />
-            </div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Observações</label>
-            <textarea id="observacao" rows="3" class="input-field" placeholder="Adicione observações..."></textarea>
-          </div>
-          <div class="flex gap-3 justify-end pt-4">
-            <button type="button" id="cancelBtn" class="btn-secondary">Cancelar</button>
-            <button type="submit" class="btn-primary">Salvar</button>
-          </div>
-        </form>
-      </div>
+      <div id="noteFormContainer"></div>
 
       <div class="card">
         ${notes.length > 0 ? `
           <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="border-b border-gray-200">
-                  <th class="text-center py-3 px-2 w-12">
+            <table class="w-full text-sm text-left">
+              <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+                <tr>
+                  <th class="p-4 w-12 text-center">
                     <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
                   </th>
-                  <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Empenho</th>
-                  <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Empresa</th>
-                  <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Setor</th>
-                  <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">NF</th>
-                  <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Data NF</th>
-                  <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Valor</th>
-                  <th class="text-center py-3 px-4 text-sm font-semibold text-gray-700">Ações</th>
+                  <th class="p-4 font-semibold">Empenho</th>
+                  <th class="p-4 font-semibold">Empresa</th>
+                  <th class="p-4 font-semibold">Setor</th>
+                  <th class="p-4 font-semibold">NF</th>
+                  <th class="p-4 font-semibold">Data NF</th>
+                  <th class="p-4 font-semibold">Valor</th>
+                  <th class="p-4 font-semibold text-center">Ações</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="divide-y divide-gray-100">
                 ${notes.map(note => `
-                  <tr class="border-b border-gray-100 hover:bg-gray-50">
-                    <td class="text-center py-3 px-2">
+                  <tr class="hover:bg-gray-50">
+                    <td class="p-4 text-center">
                       <input type="checkbox" class="note-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500" data-id="${note.id}" ${this.selectedNotes.has(note.id) ? 'checked' : ''} />
                     </td>
-                    <td class="py-3 px-4 text-sm text-gray-700">${note.empenho}</td>
-                    <td class="py-3 px-4 text-sm text-gray-700">${note.empresa}</td>
-                    <td class="py-3 px-4 text-sm text-gray-700">${note.setor}</td>
-                    <td class="py-3 px-4 text-sm font-medium text-gray-900">${note.numeroNota}</td>
-                    <td class="py-3 px-4 text-sm text-gray-700">${this.formatDate(note.dataNota)}</td>
-                    <td class="py-3 px-4 text-sm font-medium text-gray-900">R$ ${parseFloat(note.valor).toFixed(2)}</td>
-                    <td class="py-3 px-4">
+                    <td class="p-4 text-gray-700">${note.empenho}</td>
+                    <td class="p-4 text-gray-700">${note.empresa}</td>
+                    <td class="p-4 text-gray-700">${note.setor}</td>
+                    <td class="p-4 font-medium text-gray-900">${note.numeroNota}</td>
+                    <td class="p-4 text-gray-700">${this.formatDate(note.dataNota)}</td>
+                    <td class="p-4 font-medium text-gray-900">R$ ${parseFloat(note.valor).toFixed(2)}</td>
+                    <td class="p-4">
                       <div class="flex items-center justify-center gap-2">
-                        <button class="edit-btn p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors" data-id="${note.id}">
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
+                        <button class="edit-btn p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors" data-id="${note.id}" title="Editar">
+                           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
                         </button>
-                        <button class="delete-btn p-2 text-red-600 hover:bg-red-50 rounded transition-colors" data-id="${note.id}">
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
+                        <button class="delete-btn p-2 text-red-600 hover:bg-red-100 rounded-full transition-colors" data-id="${note.id}" title="Excluir">
+                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
                         </button>
                       </div>
                     </td>
@@ -149,12 +93,11 @@ export class NotesView {
             </table>
           </div>
         ` : `
-          <div class="text-center py-12">
-            <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
-            </svg>
-            <p class="text-gray-500">Nenhuma nota fiscal cadastrada</p>
-            <button onclick="document.getElementById('addNoteBtn').click()" class="mt-4 text-primary-600 hover:text-primary-700 font-medium">
+          <div class="text-center py-16">
+            <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>
+            <h3 class="text-lg font-semibold text-gray-800">Nenhuma nota fiscal cadastrada</h3>
+            <p class="text-gray-500 mt-1">Comece adicionando uma nova nota.</p>
+            <button onclick="document.getElementById('addNoteBtn').click()" class="mt-4 btn-primary">
               Cadastrar primeira nota
             </button>
           </div>
@@ -167,46 +110,14 @@ export class NotesView {
   }
 
   attachEventListeners(container) {
-    const addBtn = container.querySelector('#addNoteBtn');
-    const form = container.querySelector('#noteFormElement');
-    const cancelBtn = container.querySelector('#cancelBtn');
-    const formContainer = container.querySelector('#noteForm');
-    const generateProtocolBtn = container.querySelector('#generateProtocolBtn');
-    const selectAllCheckbox = container.querySelector('#selectAll');
+    container.querySelector('#addNoteBtn')?.addEventListener('click', () => this.showFormModal());
+    container.querySelector('#generateProtocolBtn')?.addEventListener('click', () => this.showProtocolModal());
 
-    addBtn?.addEventListener('click', () => {
-      this.editingId = null;
-      form.reset();
-      container.querySelector('#formTitle').textContent = 'Nova Nota Fiscal';
-      formContainer.classList.remove('hidden');
-      formContainer.scrollIntoView({ behavior: 'smooth' });
-    });
-
-    cancelBtn?.addEventListener('click', () => {
-      this.editingId = null;
-      form.reset();
-      formContainer.classList.add('hidden');
-    });
-
-    form?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      this.handleSubmit(form, formContainer);
-    });
-
-    generateProtocolBtn?.addEventListener('click', () => {
-      this.showProtocolModal();
-    });
-
-    selectAllCheckbox?.addEventListener('change', (e) => {
-      const checkboxes = container.querySelectorAll('.note-checkbox');
-      checkboxes.forEach(cb => {
+    container.querySelector('#selectAll')?.addEventListener('change', (e) => {
+      container.querySelectorAll('.note-checkbox').forEach(cb => {
         cb.checked = e.target.checked;
         const id = parseInt(cb.dataset.id);
-        if (e.target.checked) {
-          this.selectedNotes.add(id);
-        } else {
-          this.selectedNotes.delete(id);
-        }
+        e.target.checked ? this.selectedNotes.add(id) : this.selectedNotes.delete(id);
       });
       this.router.loadView('notes');
     });
@@ -214,74 +125,90 @@ export class NotesView {
     container.querySelectorAll('.note-checkbox').forEach(checkbox => {
       checkbox.addEventListener('change', (e) => {
         const id = parseInt(e.target.dataset.id);
-        if (e.target.checked) {
-          this.selectedNotes.add(id);
-        } else {
-          this.selectedNotes.delete(id);
-        }
+        e.target.checked ? this.selectedNotes.add(id) : this.selectedNotes.delete(id);
         this.router.loadView('notes');
       });
     });
 
     container.querySelectorAll('.edit-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = parseInt(btn.dataset.id);
-        this.handleEdit(id, formContainer, form);
-      });
+      btn.addEventListener('click', () => this.showFormModal(parseInt(btn.dataset.id)));
     });
 
     container.querySelectorAll('.delete-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = parseInt(btn.dataset.id);
-        this.handleDelete(id);
-      });
+      btn.addEventListener('click', () => this.handleDelete(parseInt(btn.dataset.id)));
     });
   }
 
-  handleSubmit(form, formContainer) {
-    const noteData = {
-      dataEntrada: form.querySelector('#dataEntrada').value,
-      empenho: form.querySelector('#empenho').value,
-      empresa: form.querySelector('#empresa').value,
-      setor: form.querySelector('#setor').value,
-      numeroNota: form.querySelector('#numeroNota').value,
-      dataNota: form.querySelector('#dataNota').value,
-      valor: form.querySelector('#valor').value,
-      dataSaida: form.querySelector('#dataSaida').value,
-      observacao: form.querySelector('#observacao').value,
-    };
+  showFormModal(id = null) {
+    this.editingId = id;
+    const isEditing = id !== null;
+    const note = isEditing ? this.stateManager.getNotes().find(n => n.id === id) : {};
 
-    if (this.editingId) {
-      this.stateManager.updateNote(this.editingId, noteData);
-    } else {
-      this.stateManager.addNote(noteData);
-    }
+    const formId = 'noteFormElement';
+    const modalContent = document.createElement('div');
+    modalContent.innerHTML = `
+      <form id="${formId}" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Data de Entrada *</label>
+            <input type="date" name="dataEntrada" required class="input-field" value="${note.dataEntrada || ''}" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Empenho *</label>
+            <input type="text" name="empenho" required class="input-field" placeholder="Ex: 001/2025" value="${note.empenho || ''}" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Empresa *</label>
+            <input type="text" name="empresa" required class="input-field" placeholder="Nome da empresa" value="${note.empresa || ''}" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Setor *</label>
+            <input type="text" name="setor" required class="input-field" placeholder="Ex: Secretaria de Saúde" value="${note.setor || ''}" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Número da Nota *</label>
+            <input type="text" name="numeroNota" required class="input-field" placeholder="Ex: 12345" value="${note.numeroNota || ''}" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Data da Nota *</label>
+            <input type="date" name="dataNota" required class="input-field" value="${note.dataNota || ''}" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Valor *</label>
+            <input type="number" name="valor" required step="0.01" class="input-field" placeholder="0.00" value="${note.valor || ''}" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Data de Saída</label>
+            <input type="date" name="dataSaida" class="input-field" value="${note.dataSaida || ''}" />
+          </div>
+          <div class="lg:col-span-3">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Observações</label>
+            <textarea name="observacao" rows="3" class="input-field" placeholder="Adicione observações...">${note.observacao || ''}</textarea>
+          </div>
+        </div>
+        <div class="flex gap-3 justify-end pt-4">
+          <button type="button" class="btn-secondary" data-dismiss-modal>Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar Nota</button>
+        </div>
+      </form>
+    `;
 
-    form.reset();
-    formContainer.classList.add('hidden');
-    this.editingId = null;
-  }
-
-  handleEdit(id, formContainer, form) {
-    const notes = this.stateManager.getNotes();
-    const note = notes.find(n => n.id === id);
-    
-    if (note) {
-      this.editingId = id;
-      form.querySelector('#dataEntrada').value = note.dataEntrada;
-      form.querySelector('#empenho').value = note.empenho;
-      form.querySelector('#empresa').value = note.empresa;
-      form.querySelector('#setor').value = note.setor;
-      form.querySelector('#numeroNota').value = note.numeroNota;
-      form.querySelector('#dataNota').value = note.dataNota;
-      form.querySelector('#valor').value = note.valor;
-      form.querySelector('#dataSaida').value = note.dataSaida || '';
-      form.querySelector('#observacao').value = note.observacao || '';
-      
-      document.querySelector('#formTitle').textContent = 'Editar Nota Fiscal';
-      formContainer.classList.remove('hidden');
-      formContainer.scrollIntoView({ behavior: 'smooth' });
-    }
+    const title = isEditing ? 'Editar Nota Fiscal' : 'Nova Nota Fiscal';
+    this.openModal(title, modalContent, (modalElement) => {
+      const form = modalElement.querySelector(`#${formId}`);
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const noteData = Object.fromEntries(formData.entries());
+        
+        if (this.editingId) {
+          this.stateManager.updateNote(this.editingId, noteData);
+        } else {
+          this.stateManager.addNote(noteData);
+        }
+        this.closeModal(modalElement);
+      });
+    });
   }
 
   handleDelete(id) {
@@ -290,13 +217,53 @@ export class NotesView {
       this.selectedNotes.delete(id);
     }
   }
+  
+  openModal(title, contentElement, onOpen) {
+    const modalId = `modal-${Date.now()}`;
+    const modal = document.createElement('div');
+    modal.id = modalId;
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 transition-opacity duration-300';
+    modal.innerHTML = `
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl transform transition-transform duration-300 scale-95">
+        <div class="p-6 border-b flex justify-between items-center">
+          <h3 class="text-xl font-bold text-gray-800">${title}</h3>
+          <button data-dismiss-modal class="text-gray-400 hover:text-gray-700 text-3xl leading-none">&times;</button>
+        </div>
+        <div class="p-6"></div>
+      </div>
+    `;
+    modal.querySelector('.p-6:last-child').appendChild(contentElement);
+    document.body.appendChild(modal);
+    
+    setTimeout(() => {
+      modal.classList.add('opacity-100');
+      modal.querySelector('.transform').classList.remove('scale-95');
+      modal.querySelector('.transform').classList.add('scale-100');
+    }, 10);
+
+    modal.querySelectorAll('[data-dismiss-modal]').forEach(btn => {
+      btn.addEventListener('click', () => this.closeModal(modal));
+    });
+
+    if (onOpen) {
+      onOpen(modal);
+    }
+  }
+
+  closeModal(modalElement) {
+    modalElement.classList.remove('opacity-100');
+    modalElement.querySelector('.transform').classList.add('scale-95');
+    setTimeout(() => {
+      modalElement.remove();
+    }, 300);
+  }
 
   showProtocolModal() {
     const notes = this.stateManager.getNotes();
     const selectedNotesList = notes.filter(note => this.selectedNotes.has(note.id));
     
     if (selectedNotesList.length === 0) {
-      alert('Selecione pelo menos uma nota fiscal para gerar o protocolo');
+      alert('Selecione pelo menos uma nota fiscal para gerar o protocolo.');
       return;
     }
 
@@ -308,14 +275,14 @@ export class NotesView {
     const defaultSecretary = 'Secretária Municipal de Assistência Social';
 
     modalOverlay.innerHTML = `
-      <div class="bg-white rounded-lg shadow-2xl w-full max-w-5xl h-[90vh] flex flex-col">
-        <div class="p-4 border-b flex justify-between items-center flex-shrink-0">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-6xl h-[95vh] flex flex-col transform transition-transform duration-300 scale-95">
+        <div class="p-5 border-b flex justify-between items-center flex-shrink-0">
           <h3 class="text-xl font-bold text-gray-800">Gerar Protocolo de Entrega</h3>
-          <button id="closeModalBtn" class="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button>
+          <button id="closeModalBtn" class="text-gray-400 hover:text-gray-700 text-3xl leading-none">&times;</button>
         </div>
         <div class="flex-grow flex flex-col md:flex-row overflow-hidden">
-          <div class="w-full md:w-1/3 p-4 border-r overflow-y-auto space-y-4 bg-gray-50">
-            <h4 class="font-semibold text-gray-700">Personalizar Documento</h4>
+          <div class="w-full md:w-1/3 p-6 border-r overflow-y-auto space-y-6 bg-gray-50">
+            <h4 class="font-semibold text-gray-800 text-lg">Personalizar Documento</h4>
             <div>
               <label for="despachoInput" class="block text-sm font-medium text-gray-700 mb-1">Número do Despacho</label>
               <input type="text" id="despachoInput" value="${defaultDispatchNumber}" class="input-field">
@@ -325,22 +292,30 @@ export class NotesView {
               <input type="text" id="secretariaInput" value="${defaultSecretary}" class="input-field">
             </div>
           </div>
-          <div class="w-full md:w-2/3 bg-gray-200 overflow-y-auto p-4 flex-grow">
+          <div class="w-full md:w-2/3 bg-gray-200 overflow-y-auto p-6 flex-grow">
             <iframe id="previewFrame" class="w-full h-full border-0 bg-white shadow-inner rounded-md"></iframe>
           </div>
         </div>
-        <div class="p-4 border-t flex justify-end gap-3 flex-shrink-0 bg-gray-50">
+        <div class="p-4 border-t flex flex-wrap justify-end gap-3 flex-shrink-0 bg-gray-100">
           <button id="cancelPrintBtn" class="btn-secondary">Cancelar</button>
           <button id="downloadWordBtn" class="btn-secondary flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             Baixar Word
           </button>
-          <button id="confirmPrintBtn" class="btn-primary">Imprimir</button>
+          <button id="confirmPrintBtn" class="btn-primary flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            Imprimir
+          </button>
         </div>
       </div>
     `;
 
     document.body.appendChild(modalOverlay);
+    
+    setTimeout(() => {
+      modalOverlay.querySelector('.transform').classList.remove('scale-95');
+      modalOverlay.querySelector('.transform').classList.add('scale-100');
+    }, 10);
 
     const despachoInput = document.getElementById('despachoInput');
     const secretariaInput = document.getElementById('secretariaInput');
@@ -361,7 +336,11 @@ export class NotesView {
     secretariaInput.addEventListener('input', updatePreview);
 
     const closeModal = () => {
-      document.body.removeChild(modalOverlay);
+      const modal = document.getElementById('protocolModal');
+      if (modal) {
+        modal.querySelector('.transform').classList.add('scale-95');
+        setTimeout(() => modal.remove(), 300);
+      }
     };
 
     closeModalBtn.addEventListener('click', closeModal);
@@ -379,7 +358,7 @@ export class NotesView {
       const secretaria = secretariaInput.value;
       
       downloadWordBtn.disabled = true;
-      downloadWordBtn.textContent = 'Gerando...';
+      downloadWordBtn.innerHTML = 'Gerando...';
 
       try {
         await this.protocolGenerator.generateWord(selectedNotesList, despacho, secretaria);
@@ -389,7 +368,7 @@ export class NotesView {
       } finally {
         downloadWordBtn.disabled = false;
         downloadWordBtn.innerHTML = `
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
           Baixar Word
         `;
       }
@@ -403,8 +382,5 @@ export class NotesView {
     const [year, month, day] = dateString.split('-');
     const date = new Date(year, month - 1, day);
     return date.toLocaleDateString('pt-BR', {timeZone: 'UTC'});
-  }
-
-  destroy() {
   }
 }
