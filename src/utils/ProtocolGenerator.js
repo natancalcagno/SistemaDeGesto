@@ -4,7 +4,7 @@ import protocolTemplate from '../templates/protocol-template.html?raw';
 export class ProtocolGenerator {
   generate(notes, despacho, secretaria) {
     const html = this.getProtocolHtml(notes, despacho, secretaria, true);
-    
+
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const printWindow = window.open(url, '_blank');
@@ -17,7 +17,7 @@ export class ProtocolGenerator {
 
   async generateWord(notes, despacho, secretaria) {
     const html = this.getProtocolHtml(notes, despacho, secretaria, false);
-    
+
     const safeDespacho = despacho.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const fileName = `despacho_${safeDespacho}.docx`;
 
@@ -43,6 +43,7 @@ export class ProtocolGenerator {
 
     } catch (error) {
       console.error("Erro ao gerar DOCX:", error);
+      alert(`Erro ao gerar documento Word: ${error.message}`);
       throw error;
     }
   }
@@ -96,6 +97,6 @@ export class ProtocolGenerator {
     if (!dateString) return '';
     const [year, month, day] = dateString.split('-');
     const date = new Date(year, month - 1, day);
-    return date.toLocaleDateString('pt-BR', {timeZone: 'UTC'});
+    return date.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
   }
 }

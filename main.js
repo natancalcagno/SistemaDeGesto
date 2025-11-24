@@ -2,13 +2,17 @@ import './style.css';
 import { StateManager } from './src/state/StateManager.js';
 import { Router } from './src/router/Router.js';
 import { AuthService } from './src/services/AuthService.js';
+import { Buffer } from 'buffer';
+
+// Polyfill global Buffer for html-to-docx
+window.Buffer = Buffer;
 
 class App {
   constructor() {
     this.stateManager = new StateManager();
     this.authService = new AuthService(this.stateManager);
     this.router = new Router(this.stateManager, this.authService);
-    
+
     this.init();
   }
 
