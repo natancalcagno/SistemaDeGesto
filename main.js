@@ -6,6 +6,7 @@ import { Buffer } from 'buffer';
 
 // Polyfill global Buffer for html-to-docx
 window.Buffer = Buffer;
+window.process = { env: {} };
 
 class App {
   constructor() {
